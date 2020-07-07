@@ -1,10 +1,11 @@
 // // -------------------------------------------------------------
-// // ---------------------- рисование точки ----------------------
+// // ---------------------- рисование точки v2 ----------------------
 // вершинный шейдер
 // определяет координаты точки и её размер. где gl_PointSize = размер
 let VSHADER_SOURCE =
-    `void main() {
-        gl_Position = vec4(0.0, 0.0, 0.0, 1.0); // координаты
+    `attribute vec4 a_Position;
+    void main() {
+        gl_Position = a_Position; // координаты
         gl_PointSize = 100.0;                    // установить размер точки
     }`;
 
@@ -29,6 +30,18 @@ function main() {
         return;
     }
 
+    // получить ссылку на переменную-атрибут
+    let a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+
+    if (a_Position < 0) {
+        console.log('Ошибка получения позиции');
+        return;
+    }
+
+    // сохранить координаты в переменной-атрибуте
+    gl.vertexAttrib3f(a_Position, 0.0, 0.0, 0.0);
+
+    // очистка
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
