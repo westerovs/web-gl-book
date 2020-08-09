@@ -35,7 +35,7 @@ function main() {
     let a_Position = gl.getAttribLocation(gl.program, 'a_Position');
 
     // зарегестрировать функцию обработчик для выз. по щелчку мыши
-    canvas.onmousedown = function(ev) {
+    canvas.onclick = function(ev) {
         click(ev, gl, canvas, a_Position);
     };
 
@@ -48,7 +48,6 @@ function click(ev, gl, canvas, a_Position) {
     let x = ev.clientX;
     let y = ev.clientY;
     let rect = ev.target.getBoundingClientRect();
-
 
     x = ((x - rect.left) - canvas.width / 2) / (canvas.width / 2);
     y = (canvas.height / 2 - (y - rect.top)) / (canvas.height / 2);
@@ -70,4 +69,4 @@ function click(ev, gl, canvas, a_Position) {
     }
 }
 
-main();
+window.addEventListener('load', () => main());
