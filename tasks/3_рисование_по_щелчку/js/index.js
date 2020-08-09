@@ -45,24 +45,26 @@ function main() {
 const g_points = []; // массив с коорд.точек, где выполнялись щелчки
 
 function click(ev, gl, canvas, a_Position) {
-    let x = ev.clientX;
-    let y = ev.clientY;
+    let x = ev.clientX; // коорд x ук. мыши
+    let y = ev.clientY; // коорд y ук. мыши
+    
+    // преобразование системы координат webGl в cист.коорд canvas
     let rect = ev.target.getBoundingClientRect();
-
     x = ((x - rect.left) - canvas.width / 2) / (canvas.width / 2);
     y = (canvas.height / 2 - (y - rect.top)) / (canvas.height / 2);
 
     // сохранить координаты в массив g_points
-    g_points.push(x);
-    g_points.push(y);
+    g_points.push([x, y]);
 
+    // oчистить canvas
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     let len = g_points.length;
 
-    for (let i = 0; i < len; i += 2) {
+    for (let i = 0; i < len; i++) {
+        let xy = g_points[i];
         // передать координаты щелчка в перем. a_Position
-        gl.vertexAttrib3f(a_Position, g_points[i], g_points[i + 1], 0.0);
+        gl.vertexAttrib3f(a_Position, xy[0], xy[1], 0.0);
 
         // draw
         gl.drawArrays(gl.POINTS, 0, 1);
