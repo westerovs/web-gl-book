@@ -6,7 +6,7 @@ let VSHADER_SOURCE =
     `attribute vec4 a_Position;
     void main() {
         gl_Position = a_Position; // координаты
-        gl_PointSize = 100.0;     // установить размер точки
+        gl_PointSize = 10.0;     // установить размер точки
     }`;
 
 // фрагментный шейдер
@@ -25,30 +25,49 @@ function main() {
         return;
     }
 
+    // инициализировать шейдеры
     if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
         console.log('шейдеры не загружены!');
         return;
     }
 
-    // получить ссылку на переменную-атрибут
+    // получить ссылку на переменную-атрибут a_Position
     let a_Position = gl.getAttribLocation(gl.program, 'a_Position');
 
-    if (a_Position < 0) {
-        console.log('Ошибка получения позиции');
-        return;
-    }
+    // зарегестрировать функцию обработчик для выз. по щелчку мыши
+    canvas.onmousedown = function(ev) {
+        click(ev, gl, canvas, a_Position);
+    };
 
-    // сохранить координаты в переменной-атрибуте - переменная/x/y/z
-    gl.vertexAttrib3f(a_Position, 0.0, 0.0, 0.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+}
 
-    // очистка
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+const g_points = []; // массив с коорд.точек, где выполнялись щелчки
+
+function click(ev, gl, canvas, a_Position) {
+    let x = ev.clientX;
+    let y = ev.clientY;
+    let rect = ev.target.getBoundingClientRect();
+
+
+    x = ((x - rect.left) - canvas.width / 2) / (canvas.width / 2);
+    y = (canvas.height / 2 - (y - rect.top)) / (canvas.height / 2);
+
+    // сохранить координаты в массив g_points
+    g_points.push(x);
+    g_points.push(y);
+
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    gl.drawArrays(gl.POINTS, 0, 1);
-};
+    let len = g_points.length;
 
-main()
+    for (let i = 0; i < len; i += 2) {
+        // передать координаты щелчка в перем. a_Position
+        gl.vertexAttrib3f(a_Position, g_points[i], g_points[i + 1], 0.0);
 
+        // draw
+        gl.drawArrays(gl.POINTS, 0, 1);
+    }
+}
 
-
+main();

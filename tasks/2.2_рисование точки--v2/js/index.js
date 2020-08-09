@@ -30,7 +30,7 @@ function main() {
         return;
     }
 
-    // получить ссылку на переменную-атрибут
+    // получить ссылку на переменную-атрибут a_Position
     let a_Position = gl.getAttribLocation(gl.program, 'a_Position');
 
     if (a_Position < 0) {
@@ -46,9 +46,6 @@ function main() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.drawArrays(gl.POINTS, 0, 1);
-};
+}
 
-main()
-
-
-
+main();
